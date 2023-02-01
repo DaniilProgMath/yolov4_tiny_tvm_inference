@@ -1,8 +1,16 @@
-export TVM_LIBRARY_PATH="/home/daniil/Desktop/flussonic_test_task/tvm/"
-export OPENCV_LIBRARY_PATH="/media/daniil/684422184421EA10/cpp_packages/opencv/build"
+export TVM_LIBRARY_PATH="../tvm/"
+export OPENCV_LIBRARY_PATH="../opencv/"
+
+if [ -d "build" ]; then
+	echo "build is exist"
+else
+	mkdir build
+fi
 
 cd build
 cmake	\
 	-DTVM_LIBRARY_PATH=$TVM_LIBRARY_PATH \
 	-DOPENCV_DIR=$OPENCV_LIBRARY_PATH \
 	..
+
+make install

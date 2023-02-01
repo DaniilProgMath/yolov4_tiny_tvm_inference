@@ -42,7 +42,24 @@ install(DIRECTORY config/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/config)
 install(DIRECTORY test_data/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/test_data)
 
 add_custom_target(run
-    COMMAND test_yolo_detection --file-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/frame_15.jpg
+    COMMAND test_yolo_detection --file-path test_data/frame_15.jpg
     DEPENDS test_yolo_detection
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
+
+add_custom_target(test_on_image_with_visualization
+    COMMAND test_yolo_detection --file-path test_data/frame_15.jpg --visualize
+    DEPENDS test_yolo_detection
+    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
+)
+
+add_custom_target(test_on_video_with_visualization
+    COMMAND test_yolo_detection --file-path test_data/anpr_test-15.mp4 --visualize
+    DEPENDS test_yolo_detection
+    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
+)
+
+
+
+
+
