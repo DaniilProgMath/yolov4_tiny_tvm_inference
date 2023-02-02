@@ -2,10 +2,10 @@
 #include "yolo_inference.h"
 
 
-void draw_predictions(cv::Mat& image, json json_detected_objects)
+void draw_predictions(cv::Mat& image, json frame_info)
 {
 
-	for (json::iterator it = json_detected_objects.begin(); it != json_detected_objects.end(); ++it) {
+	for (json::iterator it = frame_info["objects"].begin(); it != frame_info["objects"].end(); ++it) {
 
   		float x1 = (*it)["coords"]["x1"];
   		float y1 = (*it)["coords"]["y1"];
@@ -44,11 +44,11 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option)
 }
 
 
-json run_yolov4_tiny_model(Yolov4_tiny yolov4_instance, cv::Mat image)
+json run_yolov4_tiny_model(Yolov4_tiny yolov4_instance, cv::Mat image, float timestamp)
 {
 	yolov4_instance.load_and_preprocessing_data(image);
 	yolov4_instance.run_inference();
-	return yolov4_instance.dump_output_to_json();
+	return yolov4_instance.dump_output_to_json(timestamp);
 }
 
 
@@ -68,12 +68,12 @@ int main(int argc, char * argv[])
 		or file_extention == "png")
 	{
     	cv::Mat image = cv::imread(file_path);
-    	json json_detected_objects = run_yolov4_tiny_model(yolov4_instance, image);
-    	std::cout << json_detected_objects.dump(4) << std::endl;
+    	json frame_info = run_yolov4_tiny_model(yolov4_instance, image, 0);
+    	std::cout << frame_info.dump(4) << std::endl;
 
     	if(visualize_detection)
     	{
-    		draw_predictions(image, json_detected_objects);
+    		draw_predictions(image, frame_info);
 			cv::imshow("Detected Objects", image);
 			cv::waitKey(0);
 			cv::destroyAllWindows();
@@ -84,6 +84,8 @@ int main(int argc, char * argv[])
 	{
 		cv::VideoCapture cap;
 		cap.open(file_path);
+
+		json all_frames_detections = json::array();
 
 		if(!cap.isOpened())
 		{
@@ -101,12 +103,13 @@ int main(int argc, char * argv[])
 		        break;
 		    }
 
-		    json json_detected_objects = run_yolov4_tiny_model(yolov4_instance, image);
-		    std::cout << json_detected_objects.dump(4) << std::endl;
+		    float timestamp = cap.get(cv::CAP_PROP_POS_MSEC);
+		    json frame_info = run_yolov4_tiny_model(yolov4_instance, image, timestamp);
+		    all_frames_detections.push_back(frame_info);
 
 		    if(visualize_detection)
     		{
-    			draw_predictions(image, json_detected_objects);
+    			draw_predictions(image, frame_info);
 				cv::imshow("Detected Objects", image);
 				cv::waitKey(5);
     		}
@@ -114,6 +117,8 @@ int main(int argc, char * argv[])
 
 		cap.release();
 		cv::destroyAllWindows();
+
+		std::cout << all_frames_detections.dump(4) << std::endl;
 	}
 	else
 		std::cout<<"Wrong file type"<<std::endl;

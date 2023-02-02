@@ -142,8 +142,10 @@ void Yolov4_tiny::output_postprocess()
 }
 
 
-json Yolov4_tiny::dump_output_to_json()
+json Yolov4_tiny::dump_output_to_json(float timestamp)
 {
+
+	json frame_info;
 	json json_detected_objects = json::array();
 
 	for(size_t i = 0; i < this->result_bboxes.size(); i++)
@@ -160,11 +162,14 @@ json Yolov4_tiny::dump_output_to_json()
 				json_object["coords"]["y1"] = this->result_bboxes.at(i).at(j).y;
 				json_object["coords"]["x2"] = this->result_bboxes.at(i).at(j).x + this->result_bboxes.at(i).at(j).width;
 				json_object["coords"]["y2"] = this->result_bboxes.at(i).at(j).y + this->result_bboxes.at(i).at(j).height;
-				json_object["timestamp"] = 0;
 				json_object["score"] = this->result_scores.at(i).at(j);
 
 				json_detected_objects.push_back(json_object);
 			}
 		}
-	return json_detected_objects;
+
+	frame_info["timestamp"] = timestamp;
+	frame_info["objects"] = json_detected_objects;
+
+	return frame_info;
 }

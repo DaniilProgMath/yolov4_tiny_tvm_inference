@@ -45,7 +45,7 @@ public:
 
 	void load_and_preprocessing_data(cv::Mat);
 	void run_inference();
-	json dump_output_to_json();
+	json dump_output_to_json(float);
 
 
 private:
