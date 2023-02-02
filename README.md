@@ -5,13 +5,16 @@
 
 ## Installation
 
-Инструкция по установке на ubuntu 18.04
+Минимальные требования к сборке:
+- gcc 7.5.0
+- g++ 7.5.0
+- CMake 3.18 или выше
 
-
+### Инструкция по установке на ubuntu:
 Склонируйте необходимые репозитории
 
 ```
-git clone https://github.com/apache/tvm.git
+git clone --recursive https://github.com/apache/tvm.git
 git clone https://github.com/opencv/opencv.git
 git clone https://github.com/DaniilProgMath/yolov4_tiny_tvm_inference.git
 ```
@@ -38,7 +41,7 @@ export OPENCV_LIBRARY_PATH="../opencv/" # Set your path
 Запустите этот файл:
 
 ```
-bash run_build.sh
+./run_build.sh
 ```
 
 ## Testing cpp compiled code
