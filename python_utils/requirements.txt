@@ -1,0 +1,5 @@
+apache-tvm==0.9.dev1124
+opencv-python==4.5.1.48
+numpy==1.19.5
+onnx==1.4.1
+onnxruntime==1.10.0
