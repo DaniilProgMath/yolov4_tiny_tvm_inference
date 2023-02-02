@@ -33,7 +33,7 @@ make -j4
 Для сборки решения отредактируйте файл run_build.sh указав актуальные пути до библиотек tvm и opencv
 
 ```
-cd ../../
+cd ../../yolov4_tiny_tvm_inference
 nano run_build.sh
 export TVM_LIBRARY_PATH="../tvm/" # Set your path
 export OPENCV_LIBRARY_PATH="../opencv/" # Set your path
