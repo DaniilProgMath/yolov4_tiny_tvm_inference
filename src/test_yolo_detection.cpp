@@ -60,7 +60,7 @@ int main(int argc, char * argv[])
 	bool visualize_detection = cmdOptionExists(argv, argv+argc, "--visualize");
 
 	Yolov4_tiny yolov4_instance = Yolov4_tiny(
-											"weights/yolov4_tiny_lib.so",
+											"weights/yolo4-416x416f32.so",
 											"config/coco_classes.txt"
 										);
 
