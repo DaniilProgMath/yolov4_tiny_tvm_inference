@@ -71,5 +71,35 @@ make test_on_video_with_visualization
 ./bin/test_yolo_detection --file-path image_path.jpg --visualize
 ```
 
+## Installation and runninig in python
+
+Требуется версия python 3.6.9 или выше.
+
+### Для установки необходимых пакетов выполните следующие инструкции:
+
+```
+cd python_utils
+python3 -m venv my_venv
+source my_venv/bin/activate
+pip install --upgrade pip
+pip3 install -r requirements.txt
+```
+
+### Для запуска решения выполните одну из следующих команд:
+
+Для запуска на тестовой картинке */test_data/frame_15.jpg.*
+```
+python3 run_tvm_yolo.py
+```
+Для запуска на любом mp4/avi/mkv видео по указанному пути  с визуализацией детекций.
+```
+python3 run_tvm_yolo.py --file-path video_path.mp4 --visualize
+```
+Для запуска на любой jpg/jpeg/png картинке по указанному пути с визуализацией детекций.
+```
+python3 run_tvm_yolo.py --file-path image_path.jpg --visualize
+```
+
+
 
 
