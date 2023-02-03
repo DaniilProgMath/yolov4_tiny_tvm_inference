@@ -5,6 +5,24 @@ import tvm.relay as relay
 
 
 def compile_model(model_path, target):
+    """
+    ru:
+        Функция выполняющая компиляцию весов onnx
+        в формат динамической библиотеки.
+
+    :param model_path: Путь до onnx весов.
+    :param target: Архитектура процессора.
+    :return: None
+
+    eng:
+        A function that compiles onnx weights
+        into a dynamic library format.
+
+    :param model_path: Path to onnx weights.
+    :param target: Processor architecture.
+    :return: None
+    """
+
     input_name = "input"
     onnx_model = onnx.load(model_path)
     shape_dict = {input_name: (1, 3, 416, 416)}

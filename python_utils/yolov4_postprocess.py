@@ -3,6 +3,18 @@ import numpy as np
 
 
 def nms_cpu(boxes, confs, nms_thresh=0.5, min_mode=False):
+    """
+    ru:
+        Реализация алгоритма не максимального подавления.
+    eng:
+        Implementation of the non-maximum suppression algorithm.
+
+    :param boxes: List of bbox objects.
+    :param confs: List of probabilities.
+    :param nms_thresh: non-maximum suppression threshold.
+    :return: List of indexes of selected objects.
+    """
+
     x1 = boxes[:, 0]
     y1 = boxes[:, 1]
     x2 = boxes[:, 2]
@@ -39,6 +51,17 @@ def nms_cpu(boxes, confs, nms_thresh=0.5, min_mode=False):
 
 
 def post_processing(conf_thresh, nms_thresh, output):
+    """
+    ru:
+        Функция для обработки результатов выхода сети.
+    eng:
+        A function to process the results of a network output.
+
+    :param conf_thresh: confidence threshold.
+    :param nms_thresh: non-maximum suppression threshold.
+    :param output: List of objects in ndarray format (bboxes, scores).
+    :return: List of objects in ndarray format (bboxes, scores).
+    """
     box_array = output[0]
     confs = output[1]
 
@@ -81,13 +104,22 @@ def post_processing(conf_thresh, nms_thresh, output):
                                    ll_box_array[k, 3],
                                    ll_max_conf[k],
                                    ll_max_id[k]])
+                bboxes = sorted(bboxes, key=lambda x:x[5])[:10]  # Getting top 10 objects
 
         bboxes_batch.append(bboxes)
-
     return bboxes_batch
 
 
 def load_class_names(namesfile):
+    """
+    ru:
+        Функция для загрузки списка классов.
+    eng:
+        Function to load the list of classes.
+
+    :param namesfile: The filename with list of class.
+    :return: list of classes.
+    """
     class_names = []
     with open(namesfile, 'r') as fp:
         lines = fp.readlines()
@@ -98,6 +130,16 @@ def load_class_names(namesfile):
 
 
 def plot_bboxes(data, frame):
+    """
+    ru:
+        Функция для отрисовки найденных объектов на изображении.
+    eng:
+        Function for drawing the found objects on the image.
+
+    :param data: Dictionary of detected objects.
+    :param frame: ndarray format image.
+    :return: ndarray image with boxes and classes object drawn.
+    """
     rgb = (255, 255, 255)
     for data_object in data["objects"]:
         x1 = data_object["coords"]["x1"]
@@ -125,6 +167,21 @@ def plot_bboxes(data, frame):
 
 
 def filt_classes_from_output(output, class_names):
+    """
+    ru:
+        Функция для фильтрования найденных объектов.
+        Возвращает объекты двух классов person и car.
+
+    eng:
+        Function for filtering found objects.
+        Returns objects of two classes person and car.
+
+    :param output: List of objects in ndarray format (bboxes, scores).
+    :param class_names: List of discovered class names.
+    :return: List of filtered objects in ndarray format
+    (bboxes, scores), list of matching class names
+    """
+
     filtered_output, filtered_clases = list(), list()
     cls_id = np.array(output[:, -1], dtype=np.int)
     detected_clases = [class_names[id] for id in cls_id]
@@ -138,6 +195,22 @@ def filt_classes_from_output(output, class_names):
 
 
 def dump_output_to_json(img, output, class_names, timestamp):
+    """
+    ru:
+        Функция для сохранения результатов детекций в
+        словарь, который в последствии можно сохранить в json.
+
+    eng:
+        A function for saving detection results to a dictionary,
+        which can later be saved as json.
+
+    :param img: ndarray format image.
+    :param output: List of objects in ndarray format (bboxes, scores).
+    :param class_names: List of discovered class names.
+    :param timestamp: List of discovered class names.
+    :return: Dictionary of detected objects.
+    """
+
     width = img.shape[1]
     height = img.shape[0]
     frame_info = {"timestamp": timestamp, "objects": []}
@@ -156,9 +229,21 @@ def dump_output_to_json(img, output, class_names, timestamp):
 
 
 def preprocess_image(img):
+    """
+    ru:
+        Функция выполняющая препроцессинг изображения.
+
+    eng:
+        Image preprocessing function.
+
+    :param img: ndarray format image.
+    :return: processed image in ndarray format.
+    """
+
     resized = cv2.resize(img, (416, 416), interpolation=cv2.INTER_LINEAR)
     img_in = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
     img_in = np.transpose(img_in, (2, 0, 1)).astype(np.float32)
     img_in = np.expand_dims(img_in, axis=0)
     img_in /= 255.0
+
     return img_in

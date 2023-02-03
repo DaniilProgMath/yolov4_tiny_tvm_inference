@@ -12,6 +12,15 @@ from yolov4_postprocess import post_processing, load_class_names, \
 
 
 def load_model(model_path):
+    """
+    ru:
+        Функция для загрузки модели.
+    eng:
+        Function to load the model.
+
+    :param model_path: Path to so file.
+    :return: tvm.contrib.graph_executor.GraphModule model object
+    """
     loaded_lib = tvm.runtime.load_module(model_path)
     target = "llvm"
     dev = tvm.device(str(target), 0)
@@ -19,6 +28,16 @@ def load_model(model_path):
 
 
 def inference_model(model, input_data):
+    """
+    ru:
+        Функция для запуска нейронной сети.
+    eng:
+        Function to run the neural network.
+
+    :param model: tvm.contrib.graph_executor.GraphModule model object.
+    :param input_data: ndarray preprocessed image data.
+    :return: [bboxes, confs] inference result
+    """
     input_name = "input"
     model.set_input(input_name, input_data)
     model.run()
@@ -30,6 +49,21 @@ def inference_model(model, input_data):
 
 
 def run(model_path, file_path, run_type, visualize_detection=False):
+    """
+    ru:
+        Общая функция программы, выполняющая инференс yolo
+        на изображении или видео.
+    eng:
+        A general program function that performs yolo inference
+        on an image or video.
+
+    :param model_path: Path to so file.
+    :param file_path: The path to the image or video.
+    :param run_type: Launch format - on image or video.
+    :param visualize_detection: Flag for detections visualization.
+    :return: None
+    """
+
     def make_detection(model, img, timestamp,
                        visualize_detection, visualize_delay):
         img_in = preprocess_image(img)
@@ -94,8 +128,8 @@ if os.path.isfile(args.file_path):
         exit()
 
     run("../weights/yolo4-416x416f32.so",
-                args.file_path,
-                run_type,
-                visualize_detection=args.visualize)
+        args.file_path,
+        run_type,
+        visualize_detection=args.visualize)
 else:
     print(f"File {args.file_path} is not exist")

@@ -8,6 +8,22 @@ from yolov4_postprocess import post_processing, load_class_names, \
 
 
 def run_onnx_inference(image_path):
+    """
+    ru:
+        Функция выполняющая инференс детектора
+        и визуализацию найденных объектов.
+
+    :param image_path: Путь к изображению.
+    :return: None
+
+    eng:
+        A function that performs detector inference
+        and visualization of found objects.
+
+    :param image_path: Path to the image.
+    :return: None
+    """
+
     img = cv2.imread(image_path)
     img_in = preprocess_image(img)
 
