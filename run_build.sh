@@ -1,5 +1,5 @@
 export TVM_LIBRARY_PATH="../tvm/"
-export OPENCV_LIBRARY_PATH="../opencv/"
+export OPENCV_LIBRARY_PATH="../opencv/build/"
 
 if [ -d "build" ]; then
 	echo "build is exist"

@@ -36,7 +36,7 @@ make -j4
 cd ../../yolov4_tiny_tvm_inference
 nano run_build.sh
 export TVM_LIBRARY_PATH="../tvm/" # Set your path
-export OPENCV_LIBRARY_PATH="../opencv/" # Set your path
+export OPENCV_LIBRARY_PATH="../opencv/build" # Set your path
 ```
 Запустите этот файл:
 

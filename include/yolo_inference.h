@@ -18,14 +18,25 @@
 #include <json.hpp>
 using json = nlohmann::json;
 
+// Данные переменные в лучшем случае должны загружаться через 
+// метод вида get_config в классе Yolov4_tiny, но в 
+//тестовом задании дешевле объявить их глобально.
+
 constexpr float CONFIDENCE_THRESHOLD = 0.4;
 constexpr float NMS_THRESHOLD = 0.6;
 constexpr int NUM_CLASSES = 80;
+constexpr int TOP_DETECTION_COUNT = 10;
 
 
 class Yolov4_tiny
 {
 
+	/*
+		ru:
+			Основной класс Yolov4_tiny для управления работой сети.
+		eng:
+			The main Yolov4_tiny class for network management.
+	*/
 public:
 	Yolov4_tiny(std::string model_path, std::string config_path)
 	{
@@ -37,30 +48,29 @@ public:
 		run = gmod.GetFunction("run");
 		class_vector = load_class_names(config_path);
 
-		x = tvm::runtime::NDArray::Empty({1, 3, 416, 416}, DLDataType{kDLFloat, 32, 1}, dev);
-		y0 = tvm::runtime::NDArray::Empty({1, 2535, 1, 4}, DLDataType{kDLFloat, 32, 1}, dev);
-  		y1 = tvm::runtime::NDArray::Empty({1, 2535, 80}, DLDataType{kDLFloat, 32, 1}, dev);
+		input = tvm::runtime::NDArray::Empty({1, 3, 416, 416}, DLDataType{kDLFloat, 32, 1}, dev);
+		output_0 = tvm::runtime::NDArray::Empty({1, 2535, 1, 4}, DLDataType{kDLFloat, 32, 1}, dev);
+  		output_1 = tvm::runtime::NDArray::Empty({1, 2535, 80}, DLDataType{kDLFloat, 32, 1}, dev);
 
 	}
 
 	void load_and_preprocessing_data(cv::Mat);
 	void run_inference();
-	json dump_output_to_json(float);
+	json dump_output_to_json(int, int, float);
 
 
 private:
 
-	std::vector<std::vector<float>> inference_bboxes;
+	std::vector<std::vector<float>> inference_bboxes; // Вектор bbox-ов на выходе из сети.
     std::vector<std::vector<float>> inference_confs;
 
-	std::vector<std::vector<cv::Rect>> result_bboxes;
+	std::vector<std::vector<cv::Rect2d>> result_bboxes; // Вектор bbox-ов полученных после постпроцессинга.
     std::vector<std::vector<float>> result_scores;
     std::vector<std::vector<int>> result_ClassIds;
 
     std::vector<std::string> class_vector;
 
-    cv::Mat image, frame, input;
-    tvm::runtime::NDArray x, y0, y1;
+    tvm::runtime::NDArray input, output_0, output_1;
     tvm::runtime::PackedFunc run, get_output, set_input;
     tvm::runtime::Module mod_factory, gmod;
 
