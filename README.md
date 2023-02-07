@@ -23,9 +23,10 @@ git clone https://github.com/DaniilProgMath/yolov4_tiny_tvm_inference.git
 ```
 sudo apt-get install pkg-config
 sudo apt-get install libavformat-dev libavcodec-dev libswscale-dev libavresample-dev
-sudo apt install -y g++ cmake make git libgtk2.0-dev pkg-config
+sudo apt install -y g++ make git libgtk2.0-dev pkg-config
 cd opencv
 mkdir build
+cd build
 cmake ..
 make -j4
 ```
